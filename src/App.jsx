@@ -3,6 +3,7 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
+  console.log(import.meta.env.VITE_BASE_URI)
   const defaultVideoId = 'IqLWMJB8hYk';
   const [videoId, setVideoId] = useState(defaultVideoId);
   const [videoDetails, setVideoDetails] = useState(null);
@@ -12,7 +13,7 @@ function App() {
 
   const fetchVideoDetails = async (id = videoId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/youtube/video/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URI}api/youtube/video/${id}`);
       setVideoDetails(response.data);
       setComments(response.data.comments || []);
     } catch (err) {
@@ -26,7 +27,7 @@ function App() {
 
   const addComment = async () => {
     try {
-      const response = await axios.post(`http://localhost:5000/api/youtube/comment/${videoId}`, { comment });
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URI}api/youtube/comment/${videoId}`, { comment });
       const newComment = {
         id: response.data.id, // Comment thread ID from YouTube API response
         text: response.data.snippet.topLevelComment.snippet.textOriginal,
@@ -46,7 +47,7 @@ function App() {
 
   const deleteComment = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/youtube/comment/${videoId}/${commentId}`);
+      await axios.delete(`${import.meta.env.VITE_BASE_URI}api/youtube/comment/${videoId}/${commentId}`);
       // Update comments state by filtering out the deleted comment
       setComments((prevComments) => prevComments.filter((c) => c.id !== commentId));
       alert('Comment deleted!');
@@ -58,7 +59,7 @@ function App() {
 
   const updateTitle = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/youtube/video/${videoId}`, { title: newTitle });
+      await axios.put(`${import.meta.env.VITE_BASE_URI}api/youtube/video/${videoId}`, { title: newTitle });
       alert('Title updated!');
       fetchVideoDetails();
     } catch (err) {
@@ -67,7 +68,7 @@ function App() {
   };
 
   const startOAuth = () => {
-    window.location.href = 'http://localhost:5000/auth/google';
+    window.location.href = `${import.meta.env.VITE_BASE_URI}auth/google`;
   };
 
   const formatDate = (dateString) => {
